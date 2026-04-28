@@ -1,0 +1,20 @@
+{
+  "name": "github-file-sync",
+  "display_name": "GitHub 文件同步助手",
+  "description": "将 .md 文件上传到 GitHub 仓库，支持需求发布与智能检索。安装后 AI 会自动引导用户完成配置。",
+  "version": "3.2.0",
+  "category": "productivity",
+  "tags": ["github", "markdown", "sync", "upload", "文件同步", "需求发布"],
+  "requires": {
+    "bins": ["python3"],
+    "env": []
+  },
+  "install": [
+    {
+      "id": "pip-pyyaml",
+      "kind": "pip",
+      "package": "pyyaml",
+      "label": "pip install pyyaml"
+    }
+  ]
+}
