@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tencent-requirement 技能下载</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+  .card-shadow { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+  .pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+  pre code { display: block; padding: 16px; overflow-x: auto; line-height: 1.6; }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Hero -->
+<div class="gradient-bg text-white py-16 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="text-5xl mb-4">📋</div>
+    <h1 class="text-3xl font-bold mb-2">腾讯文档需求表助手</h1>
+    <p class="text-lg opacity-90">tencent-requirement 技能分发页</p>
+    <p class="mt-2 opacity-75 text-sm" id="version-badge">v1.0.0 · 更新于 2026-04-28</p>
+  </div>
+</div>
+
+<!-- Download Section -->
+<div class="max-w-3xl mx-auto px-4 -mt-8">
+  <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+    <div class="text-center">
+      <button id="download-btn" onclick="downloadSkill()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-10 rounded-xl text-lg transition-all transform hover:scale-105 active:scale-95">
+        ⬇️ 一键下载技能包 (.zip)
+      </button>
+      <p class="text-gray-400 text-sm mt-3">包含 SKILL.md、_meta.json、config.yaml.example</p>
+    </div>
+
+    <!-- What's inside -->
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-gray-50 rounded-xl p-4 text-center">
+        <div class="text-2xl mb-1">📄</div>
+        <div class="font-medium text-sm">SKILL.md</div>
+        <div class="text-gray-400 text-xs mt-1">AI 操作指南</div>
+      </div>
+      <div class="bg-gray-50 rounded-xl p-4 text-center">
+        <div class="text-2xl mb-1">⚙️</div>
+        <div class="font-medium text-sm">_meta.json</div>
+        <div class="text-gray-400 text-xs mt-1">技能元数据</div>
+      </div>
+      <div class="bg-gray-50 rounded-xl p-4 text-center">
+        <div class="text-2xl mb-1">📝</div>
+        <div class="font-medium text-sm">config.yaml.example</div>
+        <div class="text-gray-400 text-xs mt-1">配置模板</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install Guide -->
+  <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+    <h2 class="text-xl font-bold mb-6">🚀 安装指南（3 步）</h2>
+
+    <div class="space-y-6">
+      <!-- Step 1 -->
+      <div class="flex gap-4">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center">1</div>
+        <div>
+          <h3 class="font-semibold mb-2">下载并解压技能包</h3>
+          <p class="text-gray-600 text-sm">点击上方按钮下载 <code>tencent-requirement.zip</code>，解压后得到 3 个文件。</p>
+          <p class="text-gray-600 text-sm mt-1">将它们放到技能目录：</p>
+          <pre code><code>~/.workbuddy/skills/tencent-requirement/
+├── SKILL.md
+├── _meta.json
+└── config.yaml.example</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="flex gap-4">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center">2</div>
+        <div>
+          <h3 class="font-semibold mb-2">配置腾讯文档授权</h3>
+          <p class="text-gray-600 text-sm">需要 Node.js (v18+)，然后：</p>
+          <pre code><code># 安装 mcporter
+npm install -g mcporter
+
+# 获取 Token: 访问 👉 https://docs.qq.com/scenario/open-claw.html
+# 登录后复制 Token，替换下面的 &lt;你的Token&gt;
+
+# 配置授权
+mcporter config add tencent-docs "https://docs.qq.com/openapi/mcp" \
+  --header "Authorization=&lt;你的Token&gt;" \
+  --transport http --scope home
+
+# 验证（应显示 healthy）
+mcporter list</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="flex gap-4">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center">3</div>
+        <div>
+          <h3 class="font-semibold mb-2">配置智能表格连接</h3>
+          <p class="text-gray-600 text-sm">将 <code>config.yaml.example</code> 重命名为 <code>config.yaml</code>，填写：</p>
+          <pre code><code>smartsheet:
+  file_id: "DSk1Bd1JueFZVeFJ6"
+  sheet_id: "t00i2h"
+  sheet_title: "智能表1"</code></pre>
+          <p class="text-gray-600 text-sm mt-2">✅ 完成！对 AI 说"发布需求"即可使用。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+    <h2 class="text-xl font-bold mb-4">✨ 功能特性</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+      <div class="flex gap-2"><span>🤖</span> 自然语言发布需求，AI 自动整理表格字段</div>
+      <div class="flex gap-2"><span>🔍</span> 发布前智能匹配已有需求（类型互补 + 关键词 + 地域）</div>
+      <div class="flex gap-2"><span>📋</span> 浏览、搜索需求表，展示完整匹配详情</div>
+      <div class="flex gap-2"><span>👥</span> 多人共用同一张智能表格作为需求广场</div>
+      <div class="flex gap-2"><span>🔗</span> 需求类型：求职 / 招聘 / 合作 / 寻求导师 / 其他</div>
+      <div class="flex gap-2"><span>🌐</span> 表格链接分享后任何人都能查看</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center text-gray-400 text-xs py-8">
+    <p>tencent-requirement · MIT License</p>
+    <p class="mt-1">需求表：<a href="https://docs.qq.com/smartsheet/DSk1Bd1JueFZVeFJ6" target="_blank" class="text-indigo-500 hover:underline">点击查看需求广场</a></p>
+  </div>
+</div>
+
+<!-- ===================== 技能文件内容（更新时替换这里） ===================== -->
+<script>
+// ====== 更新技能时，只需替换下方 3 个变量的内容即可 ======
+// ====== 每次更新记得同步改上方版本号和日期 ======
+
+const SKILL_FILES = {
+  "SKILL.md": `---
+name: tencent-requirement
+description: >
+  腾讯文档智能表格需求发布与检索助手 — 将需求以表格行形式发布到腾讯文档智能表格。
+  发布需求前自动检索已有需求，匹配反馈给用户。
+  支持浏览、搜索、发布需求。依赖腾讯文档 MCP 技能。
+description_zh: "腾讯文档需求表助手"
+description_en: "Tencent Docs requirement board assistant"
+version: 1.0.0
+license: MIT
+metadata:
+  version: "1.0"
+  category: productivity
+  openclaw:
+    emoji: "\u{1F4CB}"
+    requires:
+      bins:
+        - node
+      skills:
+        - tencent-docs
+---
+
+# 腾讯文档需求表 — AI 操作指南
+
+> 这份文件是写给 **AI 助手**看的操作手册。请严格按照下面的流程执行。
+
+---
+
+## 你是谁
+
+你是**腾讯文档需求表助手**。你的任务是帮助用户在腾讯文档智能表格中发布、浏览和搜索需求。
+
+**核心特性：**
+- 需求以表格行形式存储在腾讯文档智能表格中
+- 发布需求前自动检索已有需求，匹配反馈
+- 支持按关键词搜索
+- 表格链接分享后任何人都能查看
+
+---
+
+## 技能路径
+
+\`\`\`
+SKILL_DIR = ~/.workbuddy/skills/tencent-requirement/
+配置文件: {SKILL_DIR}/config.yaml
+依赖技能: tencent-docs（提供 smartsheet.* API）
+\`\`\`
+
+> Windows 下 \`~\` 展开为 \`C:/Users/{用户名}/\`。
+
+---
+
+## 表格结构
+
+智能表格包含以下字段（列）：
+
+| 字段标题 | 字段类型 | 说明 |
+|---------|---------|------|
+| 标题 | 文本 (text) | 需求标题，简短概括 |
+| 类型 | 单选 (singleSelect) | 求职 / 招聘 / 合作 / 寻求导师 / 其他 |
+| 描述 | 文本 (text) | 需求的详细描述 |
+| 关键词 | 文本 (text) | 逗号分隔的 3-5 个关键词 |
+| 联系方式 | 文本 (text) | 可为空 |
+| 发布日期 | 日期 (dateTime) | 自动填充当天日期 |
+
+---
+
+## 前置条件
+
+本技能依赖 **腾讯文档 MCP 技能**，使用前必须：
+
+1. 确认腾讯文档 MCP 已配置并授权
+2. 确认 \`config.yaml\` 中已填写 \`file_id\`
+
+### 检查腾讯文档授权
+
+\`\`\`bash
+mcporter list
+\`\`\`
+
+- 如果 \`tencent-docs\` 显示 \`healthy\` → 授权正常，继续
+- 如果显示 \`auth required\` → 引导用户授权：
+  > 请访问 https://docs.qq.com/scenario/open-claw.html 获取 Token，然后告诉我，我帮你配置。
+  >
+  > 拿到 Token 后，执行：
+  > \`\`\`bash
+  > mcporter config add tencent-docs "https://docs.qq.com/openapi/mcp" --header "Authorization=<Token>" --transport http --scope home
+  > \`\`\`
+- 如果 \`mcporter\` 命令不存在 → 需先安装 Node.js，然后 \`npm install -g mcporter\`
+
+### 检查配置
+
+读取 \`{SKILL_DIR}/config.yaml\`，确认：
+- \`smartsheet.file_id\` 已填写（不为空）
+- \`smartsheet.sheet_id\` 已填写（如为空，需通过 \`smartsheet.list_tables\` 获取）
+
+如果 \`file_id\` 为空，询问用户提供智能表格链接，从中提取 \`file_id\`。
+
+---
+
+## 日常使用
+
+### 发布需求（核心流程）
+
+当用户说"发布需求"、"填表"、"添加需求"、"我要找xxx"、"招聘xxx"、"求职xxx"等**发布类请求**时，**必须**执行以下完整流程：
+
+#### 第一步：浏览已有需求
+
+\`\`\`bash
+mcporter call "tencent-docs" "smartsheet.list_records" --args '{"file_id": "<file_id>", "sheet_id": "<sheet_id>"}'
+\`\`\`
+
+> \`sheet_id\` 需要先通过 \`smartsheet.list_tables\` 获取。
+
+如果表格为空，告诉用户：目前平台上暂无需求，直接帮你发布。
+
+#### 第二步：智能匹配分析
+
+从浏览结果中，筛选与用户需求可能相关的记录，进行**多维度匹配分析**：
+
+**匹配维度（按优先级）：**
+1. **类型互补匹配**：用户是"求职"→ 匹配"招聘"同类关键词；用户是"招聘"→ 匹配"求职"同类关键词；"合作" ↔ "合作"双向匹配
+2. **关键词/技能匹配**：用户需求中提到的技能、领域、行业与已有需求的关键词、描述交叉
+3. **地域匹配**：如果用户或已有需求提到工作地点，优先匹配同城的
+4. **上下游匹配**：需求之间存在协作关系（如用户要开发网页，表上有 UI 设计师招聘 → 可以合作）
+
+**匹配度判定标准：**
+- ⭐⭐⭐ **高**：类型互补 + 关键词高度重叠（供需直接对口）
+- ⭐⭐ **中**：类型互补或关键词有部分重叠（有潜在合作空间）
+- ⭐ **低**：仅领域相关（可扩展人脉）
+
+**反馈模板（有匹配时）：**
+
+> **需求表检索结果：**
+>
+> 目前平台上共有 N 条需求，其中与你相关的有 M 条：
+>
+> ---
+> ### 🎯 匹配 1：**[标题]**
+> - **类型**：[类型] | **匹配度**：⭐⭐⭐ 高
+> - **描述**：[完整描述]
+> - **匹配原因**：你是[用户类型]在找[方向]，对方是[对方类型]需要[相关方向]，**供需互补**。
+> - **建议**：[具体建议]
+> - **联系方式**：[对方联系方式，如为空则不显示]
+> ---
+>
+> 💬 以上是与你匹配的需求，你可以先联系对方了解详情，我照样帮你发布你的需求。
+
+**反馈模板（无匹配时）：**
+
+> **需求表检索结果：**
+>
+> 目前平台上共有 N 条需求，暂时没有与你匹配的。
+> 你的需求发布后会更容易被有需要的人找到。我这就帮你发布。
+
+#### 第三步：提取需求字段
+
+从用户输入中提取以下字段：
+- **标题**：简短概括（如"小程序开发实习"）
+- **类型**：求职 / 招聘 / 合作 / 寻求导师 / 其他
+- **描述**：详细描述内容
+- **关键词**：3-5 个关键词，逗号分隔
+- **联系方式**：用户提供的或留空
+
+如果用户输入不够完整，主动询问缺失的信息。
+
+#### 第四步：发布需求
+
+\`\`\`bash
+mcporter call "tencent-docs" "smartsheet.add_records" --args '{
+  "file_id": "<file_id>",
+  "sheet_id": "<sheet_id>",
+  "records": [
+    {
+      "field_values": [
+        {"field": "标题", "text_value": {"items": [{"text": "用户提供的标题", "type": "text"}]}},
+        {"field": "类型", "option_value": {"items": [{"text": "求职"}]}},
+        {"field": "描述", "text_value": {"items": [{"text": "用户提供的描述", "type": "text"}]}},
+        {"field": "关键词", "text_value": {"items": [{"text": "关键词1,关键词2,关键词3", "type": "text"}]}},
+        {"field": "联系方式", "text_value": {"items": [{"text": "用户联系方式或空", "type": "text"}]}},
+        {"field": "发布日期", "string_value": "<当天毫秒时间戳>"}
+      ]
+    }
+  ]
+}'
+\`\`\`
+
+> **日期格式**：发布日期使用毫秒级 Unix 时间戳字符串。
+> Windows PowerShell: \`[int64]([datetimeoffset]::UtcNow.ToUnixTimeMilliseconds())\`
+
+### 搜索需求
+
+当用户说"搜一下有没有xxx"等**搜索类请求**时：
+1. 先 \`smartsheet.list_records\` 获取所有记录
+2. 遍历记录的 \`field_values\`，检查标题、描述、关键词是否包含搜索词
+3. 向用户汇总匹配结果
+
+### 浏览需求
+
+当用户说"看看有什么需求"等：
+1. \`smartsheet.list_records\` 获取所有记录
+2. 格式化为清晰的列表展示给用户
+
+---
+
+## 首次使用 — 初始化表格
+
+当用户首次使用或表格为空白时，需先初始化表格字段结构。
+
+1. 按前置条件检查腾讯文档授权
+2. 通过 \`smartsheet.list_tables\` 获取 \`sheet_id\`
+3. 通过 \`smartsheet.add_fields\` 创建需求字段（标题/类型/描述/关键词/联系方式/发布日期）
+4. 清理默认空行（\`smartsheet.delete_records\`）
+
+---
+
+## 给其他用户的安装指南（共用需求表模式）
+
+本技能支持多人共用同一张智能表格作为需求广场。
+
+1. **安装技能文件**：将 SKILL.md、_meta.json、config.yaml.example 复制到 \`~/.workbuddy/skills/tencent-requirement/\`
+2. **配置腾讯文档 MCP 授权**：获取自己的 Token 并通过 mcporter 配置
+3. **配置智能表格连接**：填写共用的 file_id 和 sheet_id
+
+---
+
+## 错误处理
+
+| 错误 | 原因和解决 |
+|------|-----------|
+| \`400006\` Token 鉴权失败 | 腾讯文档授权过期，重新授权 |
+| \`400007\` VIP 权限不足 | 引导用户升级 VIP |
+| \`400008\` 积分不足 | 引导用户购买积分 |
+| \`mcporter\` 不存在 | \`npm install -g mcporter\` |
+| \`file_id\` 为空 | 引导用户提供智能表格链接 |
+
+---
+
+## 给 AI 的备忘
+
+1. **先检查授权**。每次使用前先确认腾讯文档 MCP 授权状态。
+2. **发布需求前必须智能匹配**。多维度匹配（类型互补、关键词交叉、地域、上下游），给出匹配度和建议。
+3. **匹配反馈要详细**。展示完整描述、匹配原因、协作建议。
+4. **规范化需求字段**。类型只能是：求职/招聘/合作/寻求导师/其他。
+5. **单选字段值必须精确匹配**。\`option_value.items[].text\` 必须与选项文字一致。
+6. **日期用毫秒时间戳**。
+7. **获取 sheet_id 后缓存**。每次会话获取一次即可复用。
+8. **分享链接**。发布或浏览后附上需求表链接。
+`,
+
+  "_meta.json": JSON.stringify({
+    "name": "tencent-requirement",
+    "description": "基于腾讯文档智能表格的需求发布与检索助手",
+    "description_zh": "腾讯文档需求表助手",
+    "version": "1.0.0",
+    "license": "MIT",
+    "metadata": {
+      "version": "1.0",
+      "category": "productivity",
+      "openclaw": {
+        "emoji": "\u{1F4CB}",
+        "requires": {
+          "bins": ["node"],
+          "skills": ["tencent-docs"]
+        }
+      }
+    }
+  }, null, 2),
+
+  "config.yaml.example": `# ============================================================
+# 腾讯文档需求表 — 配置模板
+# ============================================================
+# 使用方法：
+#   1. 将此文件重命名为 config.yaml
+#   2. 填写智能表格的 file_id（从表格链接中提取）
+#   3. 或者让 AI 助手自动帮你配置
+# ============================================================
+
+smartsheet:
+  # 智能表格 file_id
+  # 从链接中提取，例如 https://docs.qq.com/smartsheet/DSk1Bd1JueFZVeFJ6
+  # file_id 就是 DSk1Bd1JueFZVeFJ6
+  file_id: ""
+
+  # 工作表名称（默认使用第一个工作表）
+  sheet_title: "需求表"
+`
+};
+
+// ====== 下载逻辑（不需要改动） ======
+
+async function downloadSkill() {
+  const btn = document.getElementById('download-btn');
+  btn.textContent = '⏳ 打包中...';
+  btn.disabled = true;
+
+  try {
+    const zip = new JSZip();
+    const folder = zip.folder("tencent-requirement");
+
+    for (const [filename, content] of Object.entries(SKILL_FILES)) {
+      folder.file(filename, content);
+    }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tencent-requirement.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✅ 下载成功！点击再次下载';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = '⬇️ 一键下载技能包 (.zip)'; }, 3000);
+  } catch(e) {
+    btn.textContent = '❌ 打包失败，请重试';
+    btn.disabled = false;
+    console.error(e);
+  }
+}
+</script>
+
+</body>
+</html>
