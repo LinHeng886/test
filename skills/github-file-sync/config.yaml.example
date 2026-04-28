@@ -1,0 +1,19 @@
+# ============================================================
+# GitHub File Sync — 配置模板（新用户用这个）
+# ============================================================
+# 使用方法：
+#   1. 将此文件重命名为 config.yaml
+#   2. 填写你自己的 GitHub Token
+#   3. 或者直接运行: python scripts/upload.py setup-user
+# ============================================================
+
+github:
+  token: ""                       # ← 填写你的 GitHub Personal Access Token
+  owner: ""                       # ← 仓库所有者（你的 GitHub 用户名）
+  repo: ""                        # ← 仓库名
+  branch: "main"
+  target_dir: ""                  # ← 上传目标目录（留空=根目录）
+  local_repo_path: ""
+
+index:
+  filename: "_index.md"
